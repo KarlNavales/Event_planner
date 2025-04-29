@@ -1,0 +1,61 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold"><%= @event.title %></h1>
+    <div class="flex gap-2">
+      <% if @event.user == current_user %>
+        <%= link_to 'Edit', edit_event_path(@event), class: 'btn btn-secondary' %>
+        <%= button_to 'Delete', @event, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-error' %>
+      <% end %>
+      <%= link_to 'Back to Events', events_path, class: 'btn btn-ghost' %>
+    </div>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl mb-6">
+    <div class="card-body">
+      <p class="text-gray-700"><%= @event.description %></p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <div>
+          <h3 class="font-bold">When</h3>
+          <p><%= @event.start_time.to_formatted_s(:long) %></p>
+          <% if @event.end_time %>
+            <p>to <%= @event.end_time.to_formatted_s(:long) %></p>
+          <% end %>
+        </div>
+        
+        <div>
+          <h3 class="font-bold">Where</h3>
+          <p><%= @event.location %></p>
+        </div>
+      </div>
+      
+      <div class="mt-4">
+        <h3 class="font-bold">Hosted by</h3>
+        <p><%= @event.user.email %></p>
+      </div>
+      
+      <div class="card-actions justify-end mt-4">
+        <% if user_signed_in? %>
+          <% if current_user.attending_events.include?(@event) %>
+            <%= button_to 'Cancel RSVP', cancel_rsvp_event_path(@event), method: :delete, class: 'btn btn-error' %>
+          <% else %>
+            <%= button_to 'RSVP', rsvp_event_path(@event), method: :post, class: 'btn btn-primary' %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-base-200 p-4 rounded-lg">
+    <h2 class="text-xl font-bold mb-4">Attendees (<%= @event.attendees.count %>)</h2>
+    <% if @event.attendees.any? %>
+      <div class="flex flex-wrap gap-2">
+        <% @event.attendees.each do |attendee| %>
+          <span class="badge badge-primary"><%= attendee.email %></span>
+        <% end %>
+      </div>
+    <% else %>
+      <p>No attendees yet. Be the first to RSVP!</p>
+    <% end %>
+  </div>
+</div>

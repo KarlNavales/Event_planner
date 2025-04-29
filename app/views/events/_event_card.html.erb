@@ -1,0 +1,21 @@
+<div class="card bg-base-100 shadow-xl">
+  <div class="card-body">
+    <h2 class="card-title"><%= event.title %></h2>
+    <p><%= event.description %></p>
+    <div class="text-sm text-gray-500">
+      <p><strong>When:</strong> <%= event.start_time.to_formatted_s(:long) %></p>
+      <p><strong>Where:</strong> <%= event.location %></p>
+      <p><strong>Host:</strong> <%= event.user.email %></p>
+    </div>
+    <div class="card-actions justify-end">
+      <%= link_to 'View', event, class: 'btn btn-sm btn-primary' %>
+      <% if user_signed_in? %>
+        <% if current_user.attending_events.include?(event) %>
+          <%= button_to 'Cancel RSVP', cancel_rsvp_event_path(event), method: :delete, class: 'btn btn-sm btn-error' %>
+        <% else %>
+          <%= button_to 'RSVP', rsvp_event_path(event), method: :post, class: 'btn btn-sm btn-success' %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>

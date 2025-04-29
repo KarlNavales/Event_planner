@@ -1,0 +1,43 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold">Upcoming Events</h1>
+    <div class="flex gap-2">
+      <%= link_to 'New Event', new_event_path, class: 'btn btn-primary' %>
+      <%= link_to 'View Calendar', calendar_path, class: 'btn btn-secondary' %>
+    </div>
+  </div>
+
+  <% if @events.any? %>
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <% @events.each do |event| %>
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body">
+            <h2 class="card-title"><%= event.title %></h2>
+            <p><%= truncate(event.description, length: 100) %></p>
+            <div class="text-sm text-gray-500">
+              <p><strong>When:</strong> <%= event.start_time.to_formatted_s(:long) %></p>
+              <p><strong>Where:</strong> <%= event.location %></p>
+            </div>
+            <div class="card-actions justify-end">
+              <%= link_to 'View', event, class: 'btn btn-sm btn-primary' %>
+              <% if user_signed_in? %>
+                <% if current_user.attending_events.include?(event) %>
+                  <%= button_to 'Cancel RSVP', cancel_rsvp_event_path(event), method: :delete, class: 'btn btn-sm btn-error' %>
+                <% else %>
+                  <%= button_to 'RSVP', rsvp_event_path(event), method: :post, class: 'btn btn-sm btn-success' %>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="alert alert-info">
+      <div>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <span>No upcoming events. Create one now!</span>
+      </div>
+    </div>
+  <% end %>
+</div>
