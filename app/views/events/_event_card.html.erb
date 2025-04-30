@@ -1,19 +1,40 @@
-<div class="card bg-base-100 shadow-xl">
+<div class="event-card">
   <div class="card-body">
-    <h2 class="card-title"><%= event.title %></h2>
-    <p><%= event.description %></p>
-    <div class="text-sm text-gray-500">
-      <p><strong>When:</strong> <%= event.start_time.to_formatted_s(:long) %></p>
-      <p><strong>Where:</strong> <%= event.location %></p>
-      <p><strong>Host:</strong> <%= event.user.email %></p>
+    <h3 class="card-title"><%= event.title %></h3>
+    
+    <div class="event-meta">
+      <div class="meta-item">
+        <i class="far fa-calendar-alt"></i>
+        <span><%= event.start_time.to_formatted_s(:long) %></span>
+      </div>
+      
+      <% if event.end_time %>
+      <div class="meta-item">
+        <i class="far fa-clock"></i>
+        <span><%= (event.end_time - event.start_time).to_i / 3600 %> hours</span>
+      </div>
+      <% end %>
+      
+      <div class="meta-item">
+        <i class="fas fa-map-marker-alt"></i>
+        <span><%= event.location %></span>
+      </div>
+      
+      <div class="meta-item">
+        <i class="fas fa-users"></i>
+        <span><%= event.attendees.count %> attending</span>
+      </div>
     </div>
-    <div class="card-actions justify-end">
-      <%= link_to 'View', event, class: 'btn btn-sm btn-primary' %>
+    
+    <p><%= truncate(event.description, length: 150) %></p>
+    
+    <div class="card-actions">
+      <%= link_to 'View Details', event, class: 'btn btn-outline' %>
       <% if user_signed_in? %>
         <% if current_user.attending_events.include?(event) %>
-          <%= button_to 'Cancel RSVP', cancel_rsvp_event_path(event), method: :delete, class: 'btn btn-sm btn-error' %>
+          <%= button_to 'Cancel RSVP', cancel_rsvp_event_path(event), method: :delete, class: 'btn btn-primary' %>
         <% else %>
-          <%= button_to 'RSVP', rsvp_event_path(event), method: :post, class: 'btn btn-sm btn-success' %>
+          <%= button_to 'RSVP', rsvp_event_path(event), method: :post, class: 'btn btn-primary' %>
         <% end %>
       <% end %>
     </div>

@@ -6,8 +6,8 @@ class Event < ApplicationRecord
   validates :title, :start_time, :location, presence: true
   validate :end_time_after_start_time
 
-  scope :upcoming, -> { where('start_time > ?', Time.now).order(:start_time) }
-  scope :past, -> { where('start_time <= ?', Time.now).order(start_time: :desc) }
+  scope :upcoming, -> { where("start_time > ?", Time.now).order(:start_time) }
+  scope :past, -> { where("start_time <= ?", Time.now).order(start_time: :desc) }
 
   private
 
